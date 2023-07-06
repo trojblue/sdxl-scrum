@@ -10,8 +10,6 @@ logger = UniLogger("_data", file_suffix="sdxl_scrum")
 data_loader = UniLoader(logger)
 
 
-
-
 def load_txt(txt_path):
     return data_loader.load_txt(Path(txt_path))
 
@@ -52,4 +50,4 @@ def send_requests_from_ui(input_urls):
 if __name__ == "__main__":
     # Gradio UI
     iface = gr.Interface(fn=send_requests_from_ui, inputs="text", outputs="text")
-    iface.launch()
+    iface.launch(share=True)
