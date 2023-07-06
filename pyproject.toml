@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "sdxl-scrum"
+version = "0.1.0"
+description = "sdxl RTA"
+authors = ["yada <trojblue@gmail.com>"]
+license = "GPL-3.0"
+readme = "README.md"
+packages = [{include = "sdxl_scrum"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
