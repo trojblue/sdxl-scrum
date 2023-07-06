@@ -6,7 +6,7 @@ import os
 from bs4 import BeautifulSoup
 from typing import List, Tuple, Dict, Optional
 from tqdm.auto import tqdm
-
+import json
 
 class DanbooruArtistFinder:
     def __init__(self, jsonl_file):
@@ -82,23 +82,47 @@ def run(csv_file, jsonl_file):
 
 
 def run_from_list(artist_handle_list, jsonl_file):
+    """
+    handle: twitter handles, eg. https://twitter.com/niniupq
+    :param artist_handle_list: ["handle_one", "handle_two"]
+    :param jsonl_file: progress save file; will create if not exist
+    :return:
+    """
     finder = DanbooruArtistFinder(jsonl_file)
     finder.find_artists(artist_handle_list)
 
 
-import json
+def get_danbooru_artists():
+    # step1
 
-
-def get_handle_list():
     handle_file = "D:\CSC\sdxl-scrum\_data\g0ach_g0ach_following.json"
     with open(handle_file, 'r', encoding='utf-8') as f:
         handles = json.load(f)
 
     following = handles['g0ach']
+    run_from_list(following, 'dbr_handle_search_results.jsonl')
 
-    return following
+
+def get_available_danbooru_artists():
+    # step2
+    results_file = "dbr_handle_search_results.jsonl"
+    with jsonlines.open(results_file, mode='r') as reader:
+        results = [obj for obj in reader if not obj['not_found']]
+
+    found_danbooru_keys = []
+    for obj in results:
+        if obj['danbooru_key']:
+            found_danbooru_keys.extend(obj['danbooru_key'])
+
+    # export fond danbooru keys to txt, one per line
+    with open('found_danbooru_keys.txt', 'w', encoding='utf-8') as f:
+        for key in found_danbooru_keys:
+            f.write(f'{key}\n')
+
+    return found_danbooru_keys
 
 
 if __name__ == '__main__':
-    f_list = get_handle_list()
-    run_from_list(f_list, 'results.jsonl')
+    # get_danbooru_artists()
+    get_available_danbooru_artists()
+
