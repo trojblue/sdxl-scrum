@@ -46,7 +46,7 @@ def send_requests_from_ui(input_urls):
     endpoint = 'https://etewv9yzp0.execute-api.us-west-2.amazonaws.com/Prod/gdl-api-gateway-to-sqs'
     params_list = [{'command': url, "s3_uri": "s3://dataset-ingested/gallery-dl/"} for url in input_urls.split('\n')]
     responses = send_post_requests_at_rate(endpoint, params_list, 2)
-    return "\n".join([f"Request received; response: {res}" for res in responses])
+    return "\n".join([f"Scraping request received; response: {res}" for res in responses])
 
 
 if __name__ == "__main__":
