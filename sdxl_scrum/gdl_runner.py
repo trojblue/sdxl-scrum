@@ -29,7 +29,8 @@ class GdlRunner:
             "image_width": ">= 512",
             "image_height": ">= 512",
             "extension": "not in ('mp4', 'gif')",
-            # "date": "> datetime(2019, 1, 1)",
+            "id": "> 3452920" # 4years ago
+            # "date": "> datetime(2019, 1, 1)",r
             # "favorite_count": "> 20",
         }
 
