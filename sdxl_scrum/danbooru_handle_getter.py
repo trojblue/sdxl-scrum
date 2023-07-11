@@ -52,27 +52,30 @@ class DanbooruArtistFinder:
         with jsonlines.open(self.jsonl_file, mode='a') as writer:
             for handle in tqdm(twitter_handles, desc="Finding artists"):
                 if handle in self.found_artists:
+                    # print("hit")
                     continue
 
-                search_url = f"{self.base_url}/posts?tags=source%3Ahttps%3A%2F%2Ftwitter.com%2F{handle}"
-                response = requests.get(search_url)
-                soup = BeautifulSoup(response.content, "html.parser")
-                post = soup.find("article", class_="post-preview")
+                else:
+                    search_url = f"{self.base_url}/posts?tags=source%3Ahttps%3A%2F%2Ftwitter.com%2F{handle}"
+                    response = requests.get(search_url)
+                    soup = BeautifulSoup(response.content, "html.parser")
+                    post = soup.find("article", class_="post-preview")
 
-                try:
-                    if post:
-                        post_id = post["data-id"]
-                        post_url = f"{self.base_url}/posts/{post_id}"
-                        artists = self._get_artist_tags(post_url)
-                        writer.write({"twitter_handle": handle, "danbooru_key": artists, "not_found": False})
-                        self.found_artists.append(handle)
-                    else:
-                        writer.write({"twitter_handle": handle, "danbooru_key": "", "not_found": True})
-                        print(f"{handle}: not found")
-                except Exception as e:
-                    print(f"Exception occurred while processing handle '{handle}': {e}")
-
-                time.sleep(2)
+                    try:
+                        if post:
+                            post_id = post["data-id"]
+                            post_url = f"{self.base_url}/posts/{post_id}"
+                            artists = self._get_artist_tags(post_url)
+                            writer.write({"twitter_handle": handle, "danbooru_key": artists, "not_found": False})
+                            self.found_artists.append(handle)
+                            time.sleep(1)
+                        else:
+                            writer.write({"twitter_handle": handle, "danbooru_key": "", "not_found": True})
+                            print(f"{handle}: not found")
+                            time.sleep(1)
+                    except Exception as e:
+                        print(f"Exception occurred while processing handle '{handle}': {e}")
+                        time.sleep(1)
 
 
 def run(csv_file, jsonl_file):
@@ -81,7 +84,7 @@ def run(csv_file, jsonl_file):
     finder.find_artists(twitter_handles)
 
 
-def run_from_list(artist_handle_list, jsonl_file):
+def run_from_list(jsonl_file, artist_handle_list):
     """
     handle: twitter handles, eg. https://twitter.com/niniupq
     :param artist_handle_list: ["handle_one", "handle_two"]
@@ -91,7 +94,6 @@ def run_from_list(artist_handle_list, jsonl_file):
     finder = DanbooruArtistFinder(jsonl_file)
     finder.find_artists(artist_handle_list)
 
-
 def get_danbooru_artists():
     # step1
 
@@ -100,8 +102,7 @@ def get_danbooru_artists():
         handles = json.load(f)
 
     following = handles['g0ach']
-    run_from_list(following, 'dbr_handle_search_results.jsonl')
-
+    run_from_list('dbr_handle_search_results.jsonl', following)
 
 def get_available_danbooru_artists():
     # step2
@@ -123,6 +124,6 @@ def get_available_danbooru_artists():
 
 
 if __name__ == '__main__':
-    # get_danbooru_artists()
-    get_available_danbooru_artists()
+    get_danbooru_artists()
+    # get_available_danbooru_artists()
 

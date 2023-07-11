@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/sdxl-scrum.iml" filepath="$PROJECT_DIR$/.idea/sdxl-scrum.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../unibox/.idea/unibox.iml" filepath="$PROJECT_DIR$/../unibox/.idea/unibox.iml" />
     </modules>
   </component>
 </project>

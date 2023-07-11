@@ -8,7 +8,8 @@ from unibox import UniLogger
 
 class GdlRunner:
     def __init__(
-            self, url_template:str, check_interval_days: int = 3, dst_dir: Optional[str] = None, logger: Optional[UniLogger] = None
+            self, url_template: str, check_interval_days: int = 3, dst_dir: Optional[str] = None,
+            logger: Optional[UniLogger] = None
     ):
         """
 
@@ -20,7 +21,7 @@ class GdlRunner:
         self.check_interval = datetime.timedelta(days=check_interval_days)
         self.dst_dir = dst_dir
         self.logger = logger or UniLogger("gallery_dl")
-        self.url_template = "https://twitter.com/{}/media"  if not url_template else url_template
+        self.url_template = "https://twitter.com/{}/media" if not url_template else url_template
 
         # filters: python语法, 变量名见和图片一起保存的json
         self.filters = {
@@ -29,7 +30,7 @@ class GdlRunner:
             "image_width": ">= 512",
             "image_height": ">= 512",
             "extension": "not in ('mp4', 'gif')",
-            "id": "> 3452920" # 4years ago
+            "id": "> 3452920"  # 4years ago
             # "date": "> datetime(2019, 1, 1)",r
             # "favorite_count": "> 20",
         }
@@ -117,9 +118,31 @@ class GdlRunner:
                 writer.writerow([handle, checked_time])
 
 
-if __name__ == "__main__":
-    file_path = "D:\CSC\sdxl-scrum\_data\\found_danbooru_keys.txt"
+def main():
+    file_path = "D:\CSC\sdxl-scrum\_data\\twi_todo_v2.txt"
     demo_download_dir = r"O:\gallery-dl"
     url_template = "\"https://danbooru.donmai.us/posts?tags={}\""
-    downloader = GdlRunner(url_template, dst_dir = demo_download_dir)
+    downloader = GdlRunner(url_template, dst_dir=demo_download_dir)
     downloader.check_and_update_csv(txt_path=file_path)
+
+
+def twitter():
+    file_path = "D:\CSC\sdxl-scrum\_data\\twi_notfound_v1.txt"
+    demo_download_dir = r"O:\gallery-dl"
+    url_template = "\"https://twitter.com/{}\" --cookies-from-browser edge"
+    downloader = GdlRunner(url_template, dst_dir=demo_download_dir)
+
+    downloader.filters = {
+            "width": ">= 512",
+            "height": ">= 512",
+            "extension": "not in ('mp4', 'gif')",
+            "date": "> datetime(2019, 1, 1)",
+            "favorite_count": "> 20",
+        }
+
+    downloader.check_and_update_csv(txt_path=file_path)
+
+
+if __name__ == "__main__":
+    # main()
+    twitter()
